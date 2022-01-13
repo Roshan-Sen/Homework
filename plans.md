@@ -3,7 +3,7 @@ To Do List
 
 + Classwork
 + Work
-+ Go to gym
++ Go to ARC
 
 -----------
 
