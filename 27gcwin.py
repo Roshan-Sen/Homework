@@ -23,7 +23,11 @@ for j in range(0, len(seq) - w + 1):
 		if newbase == 'C' or newbase == 'G': gccount += 1
 		segment = segment[1:len(segment)] + newbase
 """
-This algorithm could in theory proceed faster than the nested loop format. The nested loop algorithm has to parse through bases that have already been "checked" in the previous loop. This algorithm avoids that possibility and could reduce the computing time. This algorith was harder to make and understand than the previous one. The nested loop algorithm when given to a colleague could be easier for them to interpret than this one.
+This algorithm could in theory proceed faster than the nested loop format. 
+The nested loop algorithm has to parse through bases that have already been "checked" in the previous loop. 
+This algorithm avoids that possibility and could reduce the computing time. 
+However, this algorith was harder to make and understand than the previous one. 
+The nested loop algorithm when given to a colleague could be easier for them to interpret than this one.
 """
 
 """
