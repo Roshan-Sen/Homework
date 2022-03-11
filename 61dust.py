@@ -68,9 +68,4 @@ for name, record in mcb.read_fasta(arg.fasta):
 		filestring += '\n'
 	else: filestring += '\n'
 
-#print(filestring)
-
-#writes a fasta file, comment out and use print pipe
-#when using program
-with open('00_masked_sequence.fa', 'w') as fp:
-	fp.write(filestring)
+print(filestring)
