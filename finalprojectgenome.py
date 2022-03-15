@@ -1,5 +1,8 @@
 import random
 
+#Comment out to fully simulate random genomes
+random.seed(4)
+
 #Prokaryotic Gene Finding
 """
 A convenient way to find genes in prokaryotic genomes is to say that any ORF >
@@ -121,7 +124,7 @@ polyuprobs = [0.05, 0.05, 0.05, 0.85] #[A, C, G, T]
 #Bacterial genomes have most coding sequences on one strand,
 #but there are a few on the other strand as well. Information
 #about this was scarce, so these values are arbitrary
-mainstrprob = 0.90
+mainstrprob = 0.50
 
 #Spacer length between genes is set arbitrarily to 20
 spacerlength = 20
@@ -257,6 +260,5 @@ def functiontester():
 	samplelibrary = genomelibrary(5)
 	print(samplelibrary)
 	print(buildgenome(samplelibrary))
-
 functiontester()
 """
