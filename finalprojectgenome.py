@@ -1,4 +1,3 @@
-import sys
 import random
 
 #Prokaryotic Gene Finding
@@ -72,9 +71,9 @@ stopcodons = {
 }
 
 #ORF sizes were specified as ranging from around 50aa to
-#around 1000. That will be the range used by the simulation.
+#around 700. That will be the range used by the simulation.
 orfmin = 50
-orfmax = 1000
+orfmax = 700
 
 #Source: https://en.wikipedia.org/wiki/Promoter_(genetics)/
 #-35 sequence along with probaility of getting each consensus nt
@@ -207,21 +206,30 @@ def reversecomplement(seq):
 	return revcomp
 
 #Builds a genome library full of genes
+#minlen is mininum gene length, maxlen is maximum gene length
 #{Promoter, ORF, Terminator, Direction (either forward or reverse)}
-def genomelibrary(numgenes):
+def genomelibrary(numgenes, minlen = orfmin, maxlen = orfmax):
 	genome = []
 	for i in range(numgenes):
 		newentry = {}
 		newentry['Promoter'] = buildpromoter()
-		newentry['ORF'] = buildorf(random.randint(orfmin, orfmax))
+		newentry['ORF'] = buildorf(random.randint(minlen, maxlen))
 		
 		if random.random() < rhothresh:	newentry['Terminator'] = buildterm(True)
-		else:                       newentry['Terminator'] = buildterm(False)
+		else:                       	newentry['Terminator'] = buildterm(False)
 		
 		if random.random() < mainstrprob:   newentry['Direction'] = 'F'
 		else:                               newentry['Direction'] = 'R'
 		genome.append(newentry)
 	return genome
+
+#Extracts the ORFs from a genome library and stores
+#them into an array, important for analysis
+def extractorfs(genelibrary):
+	orfs = []
+	for gene in genelibrary:
+		orfs.append(gene['ORF'])
+	return orfs
 
 #Builds a genome from a genome library.
 #spacelen is the space between genes
