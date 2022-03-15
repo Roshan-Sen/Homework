@@ -1,4 +1,5 @@
 import finalprojectgenome as sim
+import matplotlib.pyplot as plt
 
 #Prokaryotic Gene Finding
 """
@@ -34,8 +35,7 @@ gcode = {
 
 #E. coli information
 genecount = 4285
-#orf sizes will use the defaults set in the genome
-#simulator file
+#orf sizes will use the defaults set in the genome simulator
 
 """
 ----------------------------
@@ -70,39 +70,21 @@ def orffinder(genome):
 	lastorf = orflist[len(orflist) - 1]
 	if lastorf[len(lastorf) - 3:] not in list(sim.stopcodons.keys()):
 		orflist.pop()
-	#checking the reverse strand
-	otherstr = sim.reversecomplement(genome)
-	rindex = 0
-	countingorf = False
-	while rindex < len(otherstr) - 2:
-		codon = otherstr[index:index + 3]
-		if countingorf:
-			if gcode[codon] == '*':
-				countingorf = False
-				orflist[orflistindex] += codon
-				rindex += 1
-			else:
-				orflist[orflistindex] += codon
-				rindex += 3
-		elif codon == 'ATG':
-			countingorf = True
-			orflistindex += 1
-			orflist.append('ATG')
-			rindex += 3
-		else: rindex += 1
-	newlastorf = orflist[len(orflist) - 1]
-	if newlastorf[len(newlastorf) - 3:] not in list(sim.stopcodons.keys()):
-		orflist.pop()
 	return orflist
 
-#extracts the orf length in amino acids from a list of ORFs
-#stores lengths in an array
-def orflengths(orfarray):
+#extracts the orfs above a certain cutoff size from
+#a list of orfs, returns a list of lengths along with
+#a cleared list of orfs where all orfs less than
+#the cutoff are removed
+def clearedorfs(orfarray, cutoff = 0):
+	neworfs = []
 	orflen = []
 	for orf in orfarray:
 		length = len(orf) / 3 - 1
-		orflen.append(length)
-	return orflen
+		if length >= cutoff:
+			neworfs.append(orf)
+			orflen.append(length)
+	return neworfs, orflen
 
 #Finds common orfs between a 'real' set of orfs
 #and a computed set function
@@ -137,10 +119,26 @@ ecgenelib = sim.genomelibrary(genecount)
 ecorfs = sim.extractorfs(ecgenelib)
 ecgenome = sim.buildgenome(ecgenelib)
 ecfoundorfs = orffinder(ecgenome)
-eccommonorfs = commonorfs(ecorfs, ecfoundorfs)
+ecfoundorfs.append(orffinder(sim.reversecomplement(ecgenome)))
 
 print('The simulated genome contained ' + str(len(ecgenelib)) + ' orfs.')
-print('The number of orfs found in the genome was ' + str(len(ecfoundorfs)) + '.')
-print('The number of found orfs that were \"real\" was ' + str(len(eccommonorfs)) + '.')
+
+trialcutoffs = [100, 200, 300]
+for value in trialcutoffs:
+	ecclearedorfs, ecorfslen = clearedorfs(ecfoundorfs, cutoff = value)
+	eccommonorfs = commonorfs(ecorfs, ecclearedorfs)
+	print('At a cutoff of ' + str(value) + ':')
+	print('The number of orfs found in the genome was ' + str(len(ecclearedorfs)) + '.')
+	print('The number of found orfs that were \"real\" was ' + str(len(eccommonorfs)) + '.')
+	print('The number of missed genes was ' + str(genecount - len(eccommonorfs)))
 
 
+#main program part 2: plotting distribution of orf lengths
+#print('Real ORFs (that were found) Length Distribution')
+"""
+plt.hist(ecorfs, bins = 20)
+plt.title('Orf Length Distribution')
+plt.xlabel('Orf Length')
+plt.ylabel('Incidence')
+plt.show()
+"""
